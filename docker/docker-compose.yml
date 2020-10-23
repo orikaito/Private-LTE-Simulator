@@ -2,8 +2,10 @@ version: '3'
 
 services:
     test-ubuntu-1:
+        # test1イメージをビルドする
         build:
-            context: ./test-ubuntu
+            context: ./test1
+            # 環境変数を渡す（ビルド用）
             args:
                 - HTTP_PROXY=$HTTP_PROXY
                 - http_proxy=$http_proxy
@@ -13,6 +15,13 @@ services:
                 - ftp_proxy=$ftp_proxy
                 - NO_PROXY=$NO_PROXY
                 - no_proxy=$no_proxy
+        
+        # コンテナ名を明示的に指定する
+        container_name: test1
+        # ホスト名を明示的に指定する
+        #hostname: web-server
+
+        # 環境変数を渡す（コンテナ用）
         environment:
             - HTTP_PROXY=$HTTP_PROXY
             - http_proxy=$http_proxy
@@ -22,15 +31,17 @@ services:
             - ftp_proxy=$ftp_proxy
             - NO_PROXY=$NO_PROXY
             - no_proxy=$no_proxy
+            - LANG=$LANG
 
         # 終了させない
         tty: true
         networks:
-            - test-network
+            test-network:
+                ipv4_address: 192.168.10.100
 
     test-ubuntu-2:
         build:
-            context: ./test-ubuntu
+            context: ./test1
             args:
                 - HTTP_PROXY=$HTTP_PROXY
                 - http_proxy=$http_proxy
@@ -40,6 +51,8 @@ services:
                 - ftp_proxy=$ftp_proxy
                 - NO_PROXY=$NO_PROXY
                 - no_proxy=$no_proxy
+        container_name: test2
+        #hostname: web-server
         environment:
             - HTTP_PROXY=$HTTP_PROXY
             - http_proxy=$http_proxy
@@ -49,10 +62,11 @@ services:
             - ftp_proxy=$ftp_proxy
             - NO_PROXY=$NO_PROXY
             - no_proxy=$no_proxy
-        # 終了させない
+            - LANG=$LANG
         tty: true
         networks:
-            - test-network
+            test-network:
+                ipv4_address: 192.168.10.101
 
 networks:
     test-network:
