@@ -17,17 +17,29 @@ Private-LTE-Simulator/
 
 # Docker ビルド手順
 
+ディレクトリは雰囲気で
+
 ## 1. `ubuntu-original-base`イメージを作成する
 
-ビルド時間短縮のため共通のイメージを作成し、継承する
+ビルド時間短縮のため共通のイメージを作成し、継承することにする
+まず、
 
 ```bash
 cd docker/ubuntu-original-image
-docker build ./ -t ubuntu-original-base
+docker-compose up --build -d
+docker exec -it oaisim bash
+```
+<!--docker build ./ -t ubuntu-original-base-->
+
+作業終了後、イメージを作成する
+
+```bash
+docker-compose stop
+docker commit oaisim_image:latest
 ```
 
 ## 2. あとはdocker-composeにおまかせ
 ```bash
-docker-compose build
-docker-compose up -d
+cd ..
+docker-compose up --build -d
 ```

@@ -1,0 +1,1 @@
+FROM oaisim_image:latest

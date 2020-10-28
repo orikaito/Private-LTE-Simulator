@@ -24,7 +24,7 @@ services:
 
         # マウント
         volumes:
-            - '../data/oaisim1:/root'
+            - '../data/oaisim1:/root/share'
 
         # 環境変数を渡す（コンテナ用）
         environment:
@@ -60,7 +60,7 @@ services:
         container_name: test2
         #hostname: web-server
         volumes:
-            - '../data/oaisim2:/root'
+            - '../data/oaisim2:/root/share'
         environment:
             - HTTP_PROXY=$HTTP_PROXY
             - http_proxy=$http_proxy
