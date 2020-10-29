@@ -1,1 +1,12 @@
-FROM oaisim_image:latest
+FROM ubuntu:18.04
+SHELL ["/bin/bash", "-c"]
+WORKDIR /workdir
+RUN sed -i.bak -e "s%http://[^ ]\+%http://ftp.jaist.ac.jp/pub/Linux/ubuntu/%g" /etc/apt/sources.list
+RUN apt-get update \
+    && apt-get -y install \
+    iproute2 \
+    iputils-ping \
+    sudo \
+    git \
+    nano \
+    xxd

@@ -14,16 +14,16 @@ services:
                 - ftp_proxy=$ftp_proxy
                 - NO_PROXY=$NO_PROXY
                 - no_proxy=$no_proxy
-                - LANG=$LANG
+                - LANG=C
         
         # コンテナ名を明示的に指定する
         container_name: oaisim
         # ホスト名を明示的に指定する
         #hostname: web-server
         volumes: 
-            - '/home/orikaito/Documents/share/:/workdir/share/'
-            - '/lib/modules/:/lib/modules/:ro'
-            - '/usr/src/:/usr/src/:ro'
+            - '/lib/modules:/lib/modules'
+            - '/usr/src:/usr/src'
+            - '/dev/bus/usb:/dev/bus/usb'
 
         # 環境変数を渡す（コンテナ用）
         environment:
@@ -35,5 +35,17 @@ services:
             - ftp_proxy=$ftp_proxy
             - NO_PROXY=$NO_PROXY
             - no_proxy=$no_proxy
-            - LANG=$LANG
+            - LANG=C
         tty: true
+        privileged: true
+        networks:
+            oaisim-network:
+                ipv4_address: 192.168.1.2
+
+networks:
+    oaisim-network:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 192.168.1.0/24

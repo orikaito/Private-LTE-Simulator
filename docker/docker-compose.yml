@@ -15,16 +15,12 @@ services:
                 - ftp_proxy=$ftp_proxy
                 - NO_PROXY=$NO_PROXY
                 - no_proxy=$no_proxy
-                - LANG=$LANG
+                - LANG=C
         
         # コンテナ名を明示的に指定する
         container_name: test1
         # ホスト名を明示的に指定する
         #hostname: web-server
-
-        # マウント
-        volumes:
-            - '../data/oaisim1:/root/share'
 
         # 環境変数を渡す（コンテナ用）
         environment:
@@ -36,7 +32,7 @@ services:
             - ftp_proxy=$ftp_proxy
             - NO_PROXY=$NO_PROXY
             - no_proxy=$no_proxy
-            - LANG=$LANG
+            - LANG=C
 
         # 終了させない
         tty: true
@@ -59,8 +55,6 @@ services:
                 - LANG=$LANG
         container_name: test2
         #hostname: web-server
-        volumes:
-            - '../data/oaisim2:/root/share'
         environment:
             - HTTP_PROXY=$HTTP_PROXY
             - http_proxy=$http_proxy
