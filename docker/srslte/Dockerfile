@@ -16,10 +16,10 @@ RUN apt-get update \
     libconfig++-dev \
     libsctp-dev
 RUN git clone https://github.com/srsLTE/srsLTE.git \
-#    && cd srsLTE \
-#    && mkdir build \
-#    && cd build \
-#    && cmake ../ \
-#    && make \
-#    && make install \
-#    && ./srslte_install_configs.sh
+    && cd srsLTE \
+    && mkdir build \
+    && cd build \
+    && cmake ../ \
+    && make \
+    && make install \
+    && ./srslte_install_configs.sh user
