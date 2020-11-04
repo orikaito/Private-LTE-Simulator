@@ -4,6 +4,8 @@ services:
     oaisim:
         build:
             context: ./
+            dockerfile: ./Dockerfile
+            #dockerfile: ./Dockerfile_for_base
             # 環境変数を渡す（ビルド用）
             args:
                 - HTTP_PROXY=$HTTP_PROXY
@@ -24,6 +26,7 @@ services:
             - '/lib/modules:/lib/modules'
             - '/usr/src:/usr/src'
             - '/dev/bus/usb:/dev/bus/usb'
+            - /tmp/.X11-unix:/tmp/.X11-unix
 
         # 環境変数を渡す（コンテナ用）
         environment:
@@ -36,8 +39,11 @@ services:
             - NO_PROXY=$NO_PROXY
             - no_proxy=$no_proxy
             - LANG=C
+            - DISPLAY=${DISPLAY}
         tty: true
         privileged: true
+        cap_add: 
+            - ALL
         networks:
             oaisim-network:
                 ipv4_address: 192.168.1.2
