@@ -4,16 +4,24 @@
 
 # ファイル構造
 要点だけピックアップ
+
 ```
 Private-LTE-Simulator/
+│
+├── data/
+│      ├── oaisim/
+│      └── srslte/
+│
 ├── docker/
 │      ├── oaisim/
 │      │      ├── Dockerfile
+│      │      ├── Dockerfile_for_base
 │      │      └── docker-compose.yml
 │      ├── srslte/
 │      │      ├── Dockerfile
 │      │      └── docker-compose.yml
 │      └── docker-compose.yml
+│
 └── README.md
 
 ```

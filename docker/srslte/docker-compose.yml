@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-    oaisim:
+    srslte:
         build:
             context: ./
             args:
@@ -20,6 +20,8 @@ services:
             - SYS_NICE
         devices:
             - /dev/net/tun
+        volumes: 
+            - '../../data/srslte:/workdir/share'
         environment:
             - HTTP_PROXY=$HTTP_PROXY
             - http_proxy=$http_proxy

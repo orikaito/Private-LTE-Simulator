@@ -27,6 +27,7 @@ services:
             - '/usr/src:/usr/src'
             - '/dev/bus/usb:/dev/bus/usb'
             - /tmp/.X11-unix:/tmp/.X11-unix
+            - '../../data/oaisim/workdir/share:'
 
         # 環境変数を渡す（コンテナ用）
         environment:
