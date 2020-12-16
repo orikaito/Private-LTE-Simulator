@@ -46,7 +46,7 @@ docker exec -it oaisim bash
 
 ```bash
 docker-compose stop
-docker commit oaisim_image:latest
+docker commit oaisim oaisim_image:latest
 ```
 
 ## 2. `srslte`イメージを作成する

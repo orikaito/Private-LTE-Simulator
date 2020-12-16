@@ -4,10 +4,11 @@ services:
     oaisim:
         build:
             context: ./
-            dockerfile: ./Dockerfile
-            #dockerfile: ./Dockerfile_for_base
+            #dockerfile: ./Dockerfile
+            dockerfile: ./Dockerfile_for_base
             # 環境変数を渡す（ビルド用）
             args:
+                - USER=root
                 - HTTP_PROXY=$HTTP_PROXY
                 - http_proxy=$http_proxy
                 - HTTPS_PROXY=$HTTPS_PROXY
@@ -31,6 +32,7 @@ services:
 
         # 環境変数を渡す（コンテナ用）
         environment:
+            - USER=root
             - HTTP_PROXY=$HTTP_PROXY
             - http_proxy=$http_proxy
             - HTTPS_PROXY=$HTTPS_PROXY
