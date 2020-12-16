@@ -64,7 +64,7 @@ docker exec -it srslte bash
 
 ```bash
 docker-compose stop
-docker commit srslte_image:latest
+docker commit srslte srslte_image:latest
 ```
 
 ## 3. 作成したイメージ2つをdocker-composeで起動
