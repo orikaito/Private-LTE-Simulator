@@ -26,4 +26,5 @@ services:
             - no_proxy=$no_proxy
             - LANG=C
         ports:
-            - "8080:80"
+            - "8080:8080"
+        network_mode: host
