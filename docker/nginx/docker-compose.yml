@@ -14,7 +14,7 @@ services:
                 - NO_PROXY=$NO_PROXY
                 - no_proxy=$no_proxy
                 - LANG=C
-        container_name: nginx
+        container_name: nginx_contents
         environment:
             - HTTP_PROXY=$HTTP_PROXY
             - http_proxy=$http_proxy
@@ -27,4 +27,6 @@ services:
             - LANG=C
         ports:
             - "8080:8080"
-        network_mode: host
+        volumes:
+            - ./conf:/etc/nginx/conf.d
+            # - ./contents:/usr/share/nginx/html
