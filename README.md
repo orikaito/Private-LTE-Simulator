@@ -2,73 +2,124 @@
 
 鈴鹿高専専攻科特別研究
 
-# ファイル構造
-要点だけピックアップ
+# ディレクトリ構造
 
-```
-Private-LTE-Simulator/
-│
-├── data/
-│      ├── oaisim/
-│      └── srslte/
-│
-├── docker/
-│      ├── oaisim/
-│      │      ├── Dockerfile
-│      │      ├── Dockerfile_for_base
-│      │      └── docker-compose.yml
-│      ├── srslte/
-│      │      ├── Dockerfile
-│      │      └── docker-compose.yml
-│      └── docker-compose.yml
-│
-└── README.md
+## `data` ディレクトリ
 
-```
+`lte-softmodem` `lte-uesoftmodem` `NextEPC` それぞれのconfファイル類  
+それぞれの仮想マシンのホームディレクトリ上に `~/data` としてマウント
 
-# Docker ビルド手順
+## `docker` ディレクトリ
 
-ディレクトリは雰囲気で置き換え理解お願いします。
-`~`=`Private-LTE-Simulator/`
+コンテンツサーバー用ディレクトリ
 
-## 1. `oaisim`イメージを作成する
+# 環境構築
 
-ビルド時間短縮のため共通のイメージを作成し、継承することにする
-まず、
+## 1. NextEPC (VirtualBox)
+
+ネットワークはSSH、eNBとの通信兼用で `192.168.56.103` を、P-GWからコンテンツサーバー用に `192.168.58.103` を割当
+
+- Ubuntu 18.04 Server版をインストール
+- NextEPCをaptでインストール
 
 ```bash
-cd ~/docker/oaisim
-docker-compose up --build -d
-docker exec -it oaisim bash
+sudo apt install nextepc
 ```
 
-作業終了後、イメージを作成する
+- 共有フォルダをマウント
+```bash
+sudo apt update
+sudo apt install virtualbox-guest-utils
+mkdir data
+sudo mount -t vboxsf lte-softmodem /home/user/data
+sudo su
+echo "NextEPC /home/user/data vboxsf defaults 0 0" >> /etc/fstab
+exit
+```
+
+- ネットワーク設定
+```bash
+sudo cp ./data/99-manual.yaml /etc/netplan/
+sudo netpaln apply
+```
+
+- confファイルを上書きコピー
+```bash
+sudo cp -f ./data/
+```
+
+- デーモンを再起動
 
 ```bash
-docker-compose stop
-docker commit oaisim oaisim_image:latest
+sudo systemctl restart nextepc-mmed
+sudo systemctl restart nextepc-pgwd
+sudo systemctl restart nextepc-sgwd
+sudo systemctl restart nextepc-hssd
+sudo systemctl restart nextepc-pcrfd
 ```
 
-## 2. `srslte`イメージを作成する
+## 2. lte-softmodem lte-uesoftmodem (VirtualBox)
 
-ビルド時間短縮のため共通のイメージを作成し、継承することにする
-まず、
+lte-softmodemとlte-uesoftmodemは共通マシン上で動作させる(localhostでL2nFAPI通信)  
+ネットワークはSSH、EPCとの通信兼用で `192.168.56.102` を割当  
+ゲストホスト間の共有フォルダとして `data`を `/home/user/data` に手動マウント
+
+- Ubuntu 18.04 Server版をインストール
+- OpenAirInterfaceをダウンロード
+- 共有フォルダをマウント
+```bash
+sudo apt update
+sudo apt install virtualbox-guest-utils
+mkdir data
+sudo mount -t vboxsf lte-softmodem /home/user/data
+sudo echo "lte-softmodem /home/user/data vboxsf defaults 0 0" >> /etc/fstab
+```
+
+- ネットワーク設定
+```bash
+sudo cp ./data/99-manual.yaml /etc/netplan/
+sudo netpaln apply
+```
+
+- confファイルを上書きコピー
+```bash
+sudo cp -f ./data/
+```
+
+- ビルド
+
+## 3. Dockerコンテナ
 
 ```bash
-cd ~/docker/srslte
-docker-compose up --build -d
-docker exec -it srslte bash
+cd ~/docker/nginx
+docker-compose build
 ```
 
-作業終了後、イメージを作成する
+# 実行
+
+## 1. NextEPC
+
+起動するだけでEPCがデーモンとして実行される。
+
+```
+```
+
+## 2. lte-softmodem lte-uesoftmodem
 
 ```bash
-docker-compose stop
-docker commit srslte srslte_image:latest
+sudo ip addr add 127.0.0.2/8 dev lo
+source init_nas_s1 UE
+sudo -E ./lte_build_oai/build/lte-softmodem -O ../ci-scripts/conf_files/rcc.band7.tm1.nfapi.conf > /dev/null
+sudo -E ./lte_build_oai/build/lte-uesoftmodem -O ../ci-scripts/conf_files/ue.nfapi.conf --L2-emul 3 --num-ues 1 --nums_ue_thread 1 > /dev/null
 ```
 
-## 3. 作成したイメージ2つをdocker-composeで起動
 ```bash
-cd ~/docker
-docker-compose up --build -d
+sudo ip route add 192.168.58.0/24 via 45.45.0.1 dev oip1
 ```
+
+# 参考URL
+
+- [OpenAirInterface](https://gitlab.eurecom.fr/oai/openairinterface5g)
+- [NextEPC](https://nextepc.org/)
+- [LTEを自作してみる(Part3) @K5K Qiita](https://qiita.com/K5K/items/d74bd78931ba2ccd3107)
+- [OAI L2 nFAPI + Free5GCによるNSA 5GC構築方法 metaMD HatenaBlog](https://metonymical.hatenablog.com/entry/2020/01/03/151233)
