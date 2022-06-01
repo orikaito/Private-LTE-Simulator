@@ -117,6 +117,15 @@ sudo -E ./lte_build_oai/build/lte-uesoftmodem -O ../ci-scripts/conf_files/ue.nfa
 sudo ip route add 192.168.58.0/24 via 45.45.0.1 dev oip1
 ```
 
+## srsRAN
+
+```bash
+sudo srsepc ~/data/epc.conf --hss.db_file ~/data/user_db.csv
+sudo ip netns exec ue1 ip route add 192.168.56.0/24 via 0.0.0.0 dev tun_srsue
+sudo iptables -t nat -A POSTROUTING -o enp0s8 -j MASQUERADE
+sudo iptables -I INPUT -i srs_spgw_sgi -j ACCEPT
+```
+
 # 参考URL
 
 - [OpenAirInterface](https://gitlab.eurecom.fr/oai/openairinterface5g)

@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+
+    nginx:
+        build:
+            context: ./nginx
+            args:
+                - HTTP_PROXY=$HTTP_PROXY
+                - http_proxy=$http_proxy
+                - HTTPS_PROXY=$HTTPS_PROXY
+                - https_proxy=$https_proxy
+                - FTP_PROXY=$FTP_PROXY
+                - ftp_proxy=$ftp_proxy
+                - NO_PROXY=$NO_PROXY
+                - no_proxy=$no_proxy
+                - LANG=C
+        container_name: nginx-server
+        environment:
+            - HTTP_PROXY=$HTTP_PROXY
+            - http_proxy=$http_proxy
+            - HTTPS_PROXY=$HTTPS_PROXY
+            - https_proxy=$https_proxy
+            - FTP_PROXY=$FTP_PROXY
+            - ftp_proxy=$ftp_proxy
+            - NO_PROXY=$NO_PROXY
+            - no_proxy=$no_proxy
+            - LANG=C
+        ports:
+            - "8080:8080"
+        volumes:
+            - ./nginx/conf:/etc/nginx/conf.d
+
+
+    coredns:
+        build:
+            context: ./coredns
+            args:
+                - HTTP_PROXY=$HTTP_PROXY
+                - http_proxy=$http_proxy
+                - HTTPS_PROXY=$HTTPS_PROXY
+                - https_proxy=$https_proxy
+                - FTP_PROXY=$FTP_PROXY
+                - ftp_proxy=$ftp_proxy
+                - NO_PROXY=$NO_PROXY
+                - no_proxy=$no_proxy
+                - LANG=C
+        container_name: coredns-dns-server
+        restart: on-failure
+        environment:
+            - HTTP_PROXY=$HTTP_PROXY
+            - http_proxy=$http_proxy
+            - HTTPS_PROXY=$HTTPS_PROXY
+            - https_proxy=$https_proxy
+            - FTP_PROXY=$FTP_PROXY
+            - ftp_proxy=$ftp_proxy
+            - NO_PROXY=$NO_PROXY
+            - no_proxy=$no_proxy
+            - LANG=C
+        expose:
+            - '53'
+            - '53/udp'
+        ports:
+            - '5300:53'
+            - '5300:53/udp'
+        volumes:
+            - './coredns/conf:/etc/coredns'
