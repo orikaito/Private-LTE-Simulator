@@ -30,6 +30,9 @@ services:
             - "8080:8080"
         volumes:
             - ./nginx/conf:/etc/nginx/conf.d
+        networks:
+            app_net:
+                ipv4_address: 192.168.30.3
 
 
     coredns:
@@ -60,8 +63,19 @@ services:
         expose:
             - '53'
             - '53/udp'
-        ports:
-            - '5300:53'
-            - '5300:53/udp'
+        # ports:
+        #     - '5300:53'
+        #     - '5300:53/udp'
         volumes:
             - './coredns/conf:/etc/coredns'
+        networks:
+            app_net:
+                ipv4_address: 192.168.30.2
+
+networks:
+    app_net:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 192.168.30.0/24

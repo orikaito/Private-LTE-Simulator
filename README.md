@@ -126,6 +126,19 @@ sudo iptables -t nat -A POSTROUTING -o enp0s8 -j MASQUERADE
 sudo iptables -I INPUT -i srs_spgw_sgi -j ACCEPT
 ```
 
+## host
+
+```bash
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo iptables -A FORWARD -s 192.168.58.0/24 -i vboxnet1 -j ACCEPT
+```
+
+## application
+
+```bash
+sudo ip route add 192.168.30.0/24 via 192.168.58.1 dev enp0s8
+```
+
 # 参考URL
 
 - [OpenAirInterface](https://gitlab.eurecom.fr/oai/openairinterface5g)
