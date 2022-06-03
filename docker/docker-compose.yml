@@ -34,8 +34,10 @@ services:
         volumes:
             - ./nginx/conf:/etc/nginx/conf.d
         networks:
-            app_net:
+            edge_net:
                 ipv4_address: 192.168.30.3
+            career_net:
+                ipv4_address: 192.168.32.3
 
 
     coredns:
@@ -72,13 +74,21 @@ services:
         volumes:
             - './coredns/conf:/etc/coredns'
         networks:
-            app_net:
+            edge_net:
                 ipv4_address: 192.168.30.2
+            career_net:
+                ipv4_address: 192.168.32.2
 
 networks:
-    app_net:
+    edge_net:
         driver: bridge
         ipam:
             driver: default
             config:
                 - subnet: 192.168.30.0/24
+    career_net:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 192.168.32.0/24
