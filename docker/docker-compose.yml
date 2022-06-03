@@ -26,8 +26,11 @@ services:
             - NO_PROXY=$NO_PROXY
             - no_proxy=$no_proxy
             - LANG=C
-        ports:
-            - "8080:8080"
+        expose:
+            - '80'
+            - '80/tcp'
+        # ports:
+        #     - "8080:8080"
         volumes:
             - ./nginx/conf:/etc/nginx/conf.d
         networks:
