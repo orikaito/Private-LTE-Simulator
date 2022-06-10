@@ -129,10 +129,17 @@ sudo iptables -I INPUT -i srs_spgw_sgi -j ACCEPT
 ## host
 
 ```bash
+sudo sed -i '/net.ipv4.ip_forward/s/^#//' /etc/sysctl.conf
+sudo sysctl -p
+sudo iptables -t nat -A POSTROUTING -s 192.168.60.0/24 -d 192.168.30.0/24 -o br_career -j MASQUERADE
+sudo iptables -t nat -A POSTROUTING -s 192.168.60.0/24 -d 192.168.32.0/24 -o br_edge -j MASQUERADE
+```
+<!--
+```bash
 sudo sysctl -w net.ipv4.ip_forward=1
 sudo iptables -A FORWARD -s 192.168.58.0/24 -i vboxnet1 -j ACCEPT
-sudo iptables -t nat -A POSTROUTING -s 192.168.56.0/24 -j MASQUERADE
 ```
+-->
 
 ## application
 

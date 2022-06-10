@@ -20,7 +20,8 @@ network:
       dhcp4: false
       addresses: [10.12.0.2/24]
       optional: true
-      routes:
-        - to: 192.168.32.0/24
-          via: 10.12.0.1
+      gateway4: 10.12.0.1
+      # routes:
+      #   - to: 192.168.32.0/24
+      #     via: 10.12.0.1
   version: 2
