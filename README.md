@@ -6,6 +6,8 @@
 
 ![システム構成図](doc/img/system_fig.svg)
 
+UE-eNB間が特に重たいので、環境を物理マシンレベルで分離している
+
 # 環境構築と実行
 - [環境構築](doc/build.md)
 - [実行](doc/execute.md)
