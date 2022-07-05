@@ -1,0 +1,15 @@
+. {
+    whoami
+    errors
+    log . "{proto} {remote} is Request: {name} {type} {>id}"
+    hosts /etc/coredns/hosts {
+        fallthrough
+    }
+    acl {
+        allow net 192.168.30.0/24
+        allow net 192.168.56.0/24
+        allow net 192.168.60.0/24
+        block
+    }
+    reload
+}
