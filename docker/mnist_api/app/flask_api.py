@@ -1,7 +1,7 @@
 # from unittest import result
 import flask
 # import numpy as np
-from PIL import Image, ExifTags
+from PIL import Image, ExifTags, ImageOps
 from keras import backend as K
 import numpy as np
 from keras import models
@@ -31,7 +31,10 @@ def allowed_file(filename):
 def transform_img(img):
     """読み込んだimageのshapeをMNISTのshape(28, 28)にする"""
     img = img.convert("L")
-    img = np.resize(img, (28,28,1))
+    img = ImageOps.invert(img)
+    size = 28,28
+    img = img.resize(size, Image.ANTIALIAS)
+    img = np.reshape(img, (28,28,1))
     img_array = np.array(img)
     img_array = img_array.reshape(1,28,28,1)
     return img_array

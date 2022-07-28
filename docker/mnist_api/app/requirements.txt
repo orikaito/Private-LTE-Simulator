@@ -1,7 +1,5 @@
 flask
-sklearn
-numpy 
-scipy 
+numpy  
 tensorflow
 keras
 pillow
