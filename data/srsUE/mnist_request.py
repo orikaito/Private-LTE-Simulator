@@ -2,6 +2,8 @@ import requests
 import json
 
 url = "http://192.168.30.3/predict"
+# url = "http://api.career-izuka.lab/predict"
+# url = "http://api.edge-izuka.lab/predict"
 
 img_list = [0] * 10
 
