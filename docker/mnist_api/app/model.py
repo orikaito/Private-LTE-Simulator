@@ -2,13 +2,12 @@ import keras
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense
-from keras.utils import to_categorical
+# from keras.utils import to_categorical
 from keras.layers.convolutional import Conv2D 
 from keras.layers.convolutional import MaxPooling2D 
 from keras.layers import Flatten 
 from keras.datasets import mnist
-import cv2
-from PIL import Image
+from PIL import Image, ImageOps
 
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
@@ -18,8 +17,8 @@ X_test = X_test.reshape(X_test.shape[0], 28, 28, 1).astype('float32')
 X_train = X_train / 255 
 X_test = X_test / 255 
 
-y_train = to_categorical(y_train)
-y_test = to_categorical(y_test)
+y_train = keras.utils.np_utils.to_categorical(y_train)
+y_test = keras.utils.np_utils.to_categorical(y_test)
 
 num_classes = y_test.shape[1] 
 
@@ -45,12 +44,17 @@ model.save('model.h5')
 
 
 for i in range(10):
-    image1="./data/"+str(i)+".jpg"
-    im = Image.open(image1)
-    img = im.convert("L")
-    img = np.resize(img, (28,28,1))
+    image1 = "./mnist_test/"+str(i)+".png"
+    img = Image.open(image1)
+    img = img.convert("L")
+    img = ImageOps.invert(img)
+    size = 28,28
+    img = img.resize(size, Image.ANTIALIAS)
+    # img.save('output-'+str(i)+'.png')
+    img = np.reshape(img, (28,28,1))
     im2arr = np.array(img)
     im2arr = im2arr.reshape(1,28,28,1)
+    print_array(im2arr)
     predict = model.predict(im2arr,verbose=0)
     print(np.argmax(predict,axis=1))
     print(str(predict[0]))
