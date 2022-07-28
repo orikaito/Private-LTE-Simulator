@@ -2,9 +2,9 @@ version: '3'
 
 services:
 
-    nginx:
+    mnist_api:
         build:
-            context: ./nginx
+            context: ./mnist_api
             args:
                 - HTTP_PROXY=$HTTP_PROXY
                 - http_proxy=$http_proxy
@@ -15,7 +15,7 @@ services:
                 - NO_PROXY=$NO_PROXY
                 - no_proxy=$no_proxy
                 - LANG=C
-        container_name: nginx-server
+        container_name: mnist-api-server
         environment:
             - HTTP_PROXY=$HTTP_PROXY
             - http_proxy=$http_proxy
@@ -32,8 +32,7 @@ services:
         # ports:
         #     - "8080:8080"
         volumes:
-            - ./nginx/conf:/etc/nginx/conf.d
-            - ./nginx/html:/usr/share/nginx/html
+            - ./mnist_api/app:/usr/src/app
         networks:
             career_net:
                 ipv4_address: 192.168.30.3
