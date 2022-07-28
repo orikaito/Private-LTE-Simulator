@@ -1,35 +1,18 @@
 # from unittest import result
-from keras.models import load_model
 import flask
 # import numpy as np
 from PIL import Image, ExifTags
 from keras import backend as K
 import numpy as np
-from tensorflow import keras
-from tensorflow.keras import layers
+from keras import models
+from time import perf_counter
 
 
 app = flask.Flask(__name__)
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif'])
 
 def load():
-    # model = load_model("mnist.h5", compile=False)
-    num_classes = 10
-    input_shape = (28, 28, 1)
-    model = keras.Sequential(
-        [
-            keras.Input(shape=input_shape),
-            layers.Conv2D(32, kernel_size=(3, 3), activation="relu"),
-            layers.MaxPooling2D(pool_size=(2, 2)),
-            layers.Conv2D(64, kernel_size=(3, 3), activation="relu"),
-            layers.MaxPooling2D(pool_size=(2, 2)),
-            layers.Flatten(),
-            layers.Dropout(0.5),
-            layers.Dense(num_classes, activation="softmax"),
-        ]
-    )
-    model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
-    model.load_weights("weights.h5")
+    model = models.load_model('./model.h5')
     return model
 
 @app.route("/help", methods = ["GET"])
@@ -47,10 +30,10 @@ def allowed_file(filename):
 
 def transform_img(img):
     """読み込んだimageのshapeをMNISTのshape(28, 28)にする"""
-    img = img.convert('L')
-    width,height = 28, 28
-    img = img.resize((width,height), Image.LANCZOS)
-    img_array = np.asarray(img).reshape((1, width, height, 1))
+    img = img.convert("L")
+    img = np.resize(img, (28,28,1))
+    img_array = np.array(img)
+    img_array = img_array.reshape(1,28,28,1)
     return img_array
 
 def deal_rotation(img):
@@ -68,23 +51,29 @@ def deal_rotation(img):
     return img
 
 
+model = load()
+
+response = {"Content-Type": "application/json",
+            "result": None, 
+            "probability": None,
+            "progress_time": None
+            }
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    response = {"Content-Type": "application/json",
-                "result": None, 
-                "probability": None}
-    model = load()
+    progress_start = perf_counter()  
     if flask.request.method == "POST":
         if flask.request.files["file"]:
+            K.clear_session()
             img = Image.open(flask.request.files["file"])
             # img = deal_rotation(img)
             img_array = transform_img(img)
             result = model.predict(img_array,verbose=0)
-            K.clear_session()
-            response["result"] = str(result)#str(np.argmax(result))
+            response["result"] = str(np.argmax(result))
             response["probability"] = str(np.max(result))
-            result = 0
+            progress_end = perf_counter()  
+            response["progress_time"] = '{:.03f}'.format((progress_end - progress_start) * 10**3)
+            # result = 0
     return flask.jsonify(response)
 
 
