@@ -118,3 +118,27 @@ sudo systemd-resolve --status
 ```bash
 sudo tc qdisc add dev enp0s9 root handle 1:0 netem delay 50ms
 ```
+
+## 4.1 アプリケーションサーバ
+
+`~/docker` ディレクトリに移動し、以下コマンドでサーバ起動
+
+```bash
+docker-compose up
+```
+
+## 4.2 アプリケーションクライアント
+
+`~/data/srsUE/mnist_request.py`を実行すると、0~9の画像ファイルを10ms秒ごとにサーバに送信し、返ってきた結果を標準出力する。
+
+もしくは、 `~/data/srsUE/mnist_test` ディレクトリに認識用画像ファイル (`*.png`) があるのでそこに移動し、以下のコマンドで画像をPOSTする。
+
+認識結果・認識精度・認識所要時間がJSONで返ってくる。
+
+```bash
+# Career route
+curl -X POST -F "file=@./ファイル名.png" "http://api.career-izuka.lab/predict"
+
+# Edge route
+curl -X POST -F "file=@./ファイル名.png" "http://api.edge-izuka.lab/predict"
+```
