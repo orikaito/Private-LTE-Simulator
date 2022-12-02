@@ -110,6 +110,9 @@ services:
         #     - '5300:53/udp'
         volumes:
             - './coredns-edge/conf:/etc/coredns'
+        cap_add:
+            - NET_ADMIN
+
         networks:
             edge_net:
                 ipv4_address: 192.168.32.2

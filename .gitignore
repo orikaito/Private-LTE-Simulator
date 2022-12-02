@@ -3,3 +3,5 @@
 user_db.csv
 __pycache__/
 *.h5
+docker/coredns-career/conf/coredns
+docker/coredns-edge/conf/coredns
