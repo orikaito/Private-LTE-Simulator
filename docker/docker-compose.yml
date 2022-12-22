@@ -119,6 +119,22 @@ services:
             career_net:
                 ipv4_address: 192.168.30.200
 
+    mqtt:
+        image: eclipse-mosquitto
+        expose:
+            - 1883
+        # ports:
+        #   - 1883:1883
+        restart: unless-stopped
+        container_name: mosquitto-mqtt-server
+        volumes:
+            - ./mosquitto-mqtt:/mosquitto/config
+        networks:
+            career_net:
+                ipv4_address: 192.168.30.4
+            edge_net:
+                ipv4_address: 192.168.32.4
+
 networks:
     career_net:
         driver: bridge
