@@ -119,17 +119,26 @@ sudo systemd-resolve --status
 sudo tc qdisc add dev enp0s9 root handle 1:0 netem delay 50ms
 ```
 
-## 4.1 アプリケーションサーバ
+# 5. PINGテスト
 
-`~/docker` ディレクトリに移動し、以下コマンドでサーバ起動
+UE側からアプリケーションサーバーへのPINGテストを行う。
+
+応答時間をCSV出力するには以下のコマンドで行う。
 
 ```bash
-docker-compose up
+touch ping.pcap
+sudo tshark -i インターフェース -w ./ping.pcap -F pcap
+
+# 別端末でpingを実行
+ping 宛先アドレス -p 5A5A5A5A -s 2056 -i 0.2 -c 100
+
+# pingを終了後、元のtsharkプロセスを終了し、以下コマンドでPCAPからCSVを出力
+tshark -r ping.pcap -Y "ip.src == 宛先アドレス and icmp" -T fields -E separator=',' -e "icmp.resptime" > ping.csv
 ```
 
-## 4.2 アプリケーションクライアント
+# 6. アプリケーションクライアント
 
-`~/data/srsUE/mnist_request.py`を実行すると、0~9の画像ファイルを10ms秒ごとにサーバに送信し、返ってきた結果を標準出力する。
+UE側で `~/data/srsUE/mnist_request.py` を実行すると、0~9の画像ファイルを10ms秒ごとにサーバに送信し、返ってきた結果を標準出力する。
 
 もしくは、 `~/data/srsUE/mnist_test` ディレクトリに認識用画像ファイル (`*.png`) があるのでそこに移動し、以下のコマンドで画像をPOSTする。
 
